@@ -8,6 +8,13 @@ from constants import *
 
 class url_segments_cricket:
 
+    """
+    Class: To provide and construct url based query parameters.
+    following functions can used to fetch url:-
+    1.get_relative_url
+    2.get_absolute_url
+    """
+
     subclass: Dict(str, str) = subclass_const
     category: Dict(str, Dict(str, str)) = category_const
     # country_data: Dict(str, str) = country_data_const
@@ -36,12 +43,18 @@ class url_segments_cricket:
         return f"class={self._subclass_query_num};"
 
     def get_relative_url(self) -> str:
+        """
+        Returns: relative generated url of site, for which query is requested.
+        """
         class_segment = self._get_url_class_segment()
         pre_html = self._get_category()
 
         return self._data_binding(pre_html, class_segment, self._country)
 
     def get_absolute_url(self) -> str:
+        """
+        Returns: absolute generated url of site, for which query is requested.
+        """
         class_segment = self._get_url_class_segment()
         pre_html = self._get_category()
         # print(class_segment, pre_html)
