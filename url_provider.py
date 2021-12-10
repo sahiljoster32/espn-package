@@ -9,7 +9,7 @@ from constants import *
 class url_segments_cricket:
 
     """
-    Class: To provide and construct url based query parameters.
+    Class: To provide and construct url based on query parameters.
     following functions can used to fetch url:-
     1.get_relative_url
     2.get_absolute_url

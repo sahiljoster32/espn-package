@@ -7,16 +7,17 @@ from url_provider import url_segments_cricket
 from typing import *
 import requests
 import json
-import re
+import re # currently of no use
 import pprint
 
 # properties going to be private!!
 headings: List = []
 batting_data: List = []
+main_data_dict = {}
 
-# this first_url is temp object not meant be used in real scenario. 
+# this first_url is temp object not meant be used in real scenario.
 first_url = url_segments_cricket(
-    "batting", "most_runs", "test_match", "India")
+    "bowling", "most_wickets", "test_match", "India")
 print(first_url.get_absolute_url())
 
 batting_oneDayInternationals_fetch_url = first_url.get_absolute_url()
@@ -47,7 +48,7 @@ def cricket_data_parser(unparsed_data: list) -> List:
     return batting_data
 
 
-def cricket_data_heading(unparsed_data: list) -> void:
+def cricket_data_heading(unparsed_data: list) -> NoReturn:
     """
     Function to parse or fetch headings of each columns.
     """
@@ -56,7 +57,6 @@ def cricket_data_heading(unparsed_data: list) -> void:
     heading_elements: List = main_table_ele.find_all("th")
 
     for element_head in heading_elements:
-
         head_text = element_head.get_text()
         if head_text != '':
             headings.append(element_head.get_text())
@@ -64,9 +64,42 @@ def cricket_data_heading(unparsed_data: list) -> void:
 
 def url_checker(Raw_url: str) -> str:
     """
-    generat or raise error for invalid url. -- pending.
+    task: generat or raise error for invalid url. -- pending.
     """
     pass
+
+
+def mainData_binder(headings: List, batting_data: List) -> NoReturn:
+    """
+    DOC: binds data with their respectie field and supply it into dictionary format.
+    """
+    headingsLen = len(headings)
+    basicDataLen = len(batting_data[0])
+
+    if headingsLen == (basicDataLen - 1):
+        for player_id, data in enumerate(batting_data):
+            temp_player_data = {}
+
+            for index in range(headingsLen + 1):
+                if index == 0:
+                    temp_player_data["player_url"] = data[index]
+                elif index != 0:
+                    temp_player_data[headings[index - 1]] = data[index]
+
+            main_data_dict[f"player_{player_id + 1}"] = temp_player_data
+
+def metaData_binder():
+    pass
+
+# -------------main run code
+# pprint.pprint(cricket_data_parser(unparsed_data))
+
+cricket_data_parser(unparsed_data)
+cricket_data_heading(unparsed_data)
+# print( headings)
+# pprint.pprint(batting_data)
+data_binder(headings, batting_data)
+pprint.pprint(main_data_dict)
 
 
 """
@@ -77,8 +110,7 @@ task 4. fecthing data some kind async current data. like ipt or t20. ---- last p
 task 5. regex for url parameters.....
 """
 
-# main run code
-pprint.pprint(cricket_data_parser(unparsed_data))
-
-cricket_data_heading(unparsed_data)
-print(headings)
+"""
+task to be resolved
+ok with batting part but except high_scores's missed value.
+"""
