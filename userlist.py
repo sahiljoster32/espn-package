@@ -7,19 +7,30 @@ from url_provider import url_segments_cricket
 from typing import *
 import requests
 import json
-import re # currently of no use
-import pprint
+import datetime
+
+import re  # currently of no use
+import pprint  # currently used for pretty print
 
 # properties going to be private!!
-headings: List = []
+headings_values: List = []
+headings_description: List = []
 batting_data: List = []
 main_data_dict = {}
+meta_data_dict = {}
+
+raw_data = {}
 
 # this first_url is temp object not meant be used in real scenario.
-first_url = url_segments_cricket(
-    "bowling", "most_wickets", "test_match", "India")
-print(first_url.get_absolute_url())
+# this url is also used in meta data XXXXXXXXX
+# print(first_url.get_absolute_url())
 
+first_url = url_segments_cricket(
+    "bowling",
+    "most_wickets",
+    "test_match",
+    "India"
+)
 batting_oneDayInternationals_fetch_url = first_url.get_absolute_url()
 
 requested_data = requests.get(batting_oneDayInternationals_fetch_url)
@@ -56,17 +67,14 @@ def cricket_data_heading(unparsed_data: list) -> NoReturn:
     main_table_ele = unparsed_data.find("thead")
     heading_elements: List = main_table_ele.find_all("th")
 
-    for element_head in heading_elements:
-        head_text = element_head.get_text()
+    for head_element in heading_elements:
+
+        head_text = head_element.get_text()
         if head_text != '':
-            headings.append(element_head.get_text())
+            head_title_txt = head_element.get('title')
 
-
-def url_checker(Raw_url: str) -> str:
-    """
-    task: generat or raise error for invalid url. -- pending.
-    """
-    pass
+            headings_values.append(head_element.get_text())
+            headings_description.append(head_title_txt)
 
 
 def mainData_binder(headings: List, batting_data: List) -> NoReturn:
@@ -88,29 +96,55 @@ def mainData_binder(headings: List, batting_data: List) -> NoReturn:
 
             main_data_dict[f"player_{player_id + 1}"] = temp_player_data
 
-def metaData_binder():
-    pass
 
-# -------------main run code
-# pprint.pprint(cricket_data_parser(unparsed_data))
+def metaData_binder(headings_values: List, headings_description: List):
+    """
+    DOC: This function fetch and populate meta data from site.
+    """
 
-cricket_data_parser(unparsed_data)
-cricket_data_heading(unparsed_data)
-# print( headings)
-# pprint.pprint(batting_data)
-data_binder(headings, batting_data)
-pprint.pprint(main_data_dict)
+    fields_description = {}
+    current_date = datetime.datetime.now()
+
+    meta_data_dict["current_stamp"] = f"{current_date}"
+
+    if len(headings_description) == len(headings_values):
+        for index, value in enumerate(headings_values):
+            fields_description[headings_values[index]
+                               ] = headings_description[index]
+        fields_description['player_url'] = 'relative link of each player'
+
+    meta_data_dict['field_description'] = fields_description
+    meta_data_dict['source_url'] = first_url.get_absolute_url()
+    meta_data_dict['data_length'] = len(batting_data)
+
+
+def get_rawData(meta_data_dict: Dict[str, Any], main_data_dict: Dict[str, str]):
+    """
+    DOC: This returns raw data which was in python format.
+    """
+    raw_data['meta_data'] = meta_data_dict
+    raw_data['data'] = main_data_dict
+
+
+def get_json_data(raw_data: Dict[str, Dict[str, Any]]):
+    """
+    DOC: This function gives json formatted data,
+    to send further.
+    """
+    return json.dumps(raw_data)
+
+
+if __name__ == "__main__":
+    cricket_data_parser(unparsed_data)
+    cricket_data_heading(unparsed_data)
+    metaData_binder(headings_values, headings_description)
+    mainData_binder(headings_values, batting_data)
+    get_rawData(meta_data_dict, main_data_dict)
+    print(get_json_data(raw_data))
 
 
 """
-task 1. json dump for every player data based on some condition. -- after class object 
-task 2. class object for data --- second priority after url check finished
-task 3. connecting with url provider X done
+task 2. class object for data 
 task 4. fecthing data some kind async current data. like ipt or t20. ---- last priority
 task 5. regex for url parameters.....
-"""
-
-"""
-task to be resolved
-ok with batting part but except high_scores's missed value.
 """

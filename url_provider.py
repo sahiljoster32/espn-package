@@ -1,7 +1,6 @@
 
 from __future__ import annotations
 from typing import *
-import json
 
 from constants import *
 
@@ -17,7 +16,6 @@ class url_segments_cricket:
 
     subclass: Dict(str, str) = subclass_const
     category: Dict(str, Dict(str, str)) = category_const
-    # country_data: Dict(str, str) = country_data_const
     """
     Above Predefined constants are not meant to be touched
     """
@@ -28,7 +26,7 @@ class url_segments_cricket:
         self._subclass_query = subclass_query
         self._country = country
 
-    def _data_binding(self, pre_html1, class_segment, country_key):
+    def _data_binding(self, pre_html1: str, class_segment: str, country_key: str) -> str:
         # Get error for keywords defined in constants.py.
         return country_url_str(pre_html1, class_segment, country_key)
 
@@ -60,7 +58,3 @@ class url_segments_cricket:
         # print(class_segment, pre_html)
 
         return 'https://stats.espncricinfo.com' + self._data_binding(pre_html, class_segment, self._country)
-
-
-# first_url = url_segments("batting", "most_runs", "test_match", "India")
-# print(first_url.get_absolute_url())
