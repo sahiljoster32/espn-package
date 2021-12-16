@@ -2,13 +2,11 @@
 from __future__ import annotations
 from typing import *
 
-# constants for maintaining data 
-
 pre_html_temp: str = None
-class_segment_temp : str = None
+class_segment_temp: str = None
 
 # data related to url
-category_const = {
+category_const: Dict[str, Dict[str, str]] = {
     "batting": {
         "most_runs": "batting/most_runs_career",
         "high_scores": "batting/most_runs_innings",
@@ -20,15 +18,16 @@ category_const = {
         "best_averages": "bowling/best_career_bowling_average"
     }
 }
-subclass_const = {
+subclass_const: Dict[str, str] = {
     "test_match": "1",
     "one_day_internationals": "2",
     "20_20_internationals": "3"
 }
 
-def country_url_str(pre_html, class_segment, country_key) :
-    
-    country_data_const = {
+
+def country_url_str(pre_html: str, class_segment: str, country_key: str) -> str:
+
+    country_data_const: Dict[str, str] = {
         'Afghanistan': f"/ci/engine/records/{pre_html}.html?{class_segment}id=40;type=team",
         'Africa XI': f"/ci/engine/records/{pre_html}.html?{class_segment}id=4058;type=team",
         'Asia XI': f"/ci/engine/records/{pre_html}.html?{class_segment}id=106;type=team",
@@ -48,7 +47,7 @@ def country_url_str(pre_html, class_segment, country_key) :
         'Netherlands': f"/ci/engine/records/{pre_html}.html?{class_segment}id=15;type=team",
         'New Zealand': f"/ci/engine/records/{pre_html}.html?{class_segment}id=5;type=team",
         'Oman': f"/ci/engine/records/{pre_html}.html?{class_segment}id=37;type=team",
-        'Pakistan': f"/ci/engine/records/{pre_html}.html?{class_segment}id=7;type=team",    
+        'Pakistan': f"/ci/engine/records/{pre_html}.html?{class_segment}id=7;type=team",
         'Papua New Guinea': f"/ci/engine/records/{pre_html}.html?{class_segment}id=20;type=team",
         'Scotland': f"/ci/engine/records/{pre_html}.html?{class_segment}id=30;type=team",
         'South Africa': f"/ci/engine/records/{pre_html}.html?{class_segment}id=3;type=team",

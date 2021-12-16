@@ -1,16 +1,13 @@
 
 from __future__ import annotations
 from bs4 import BeautifulSoup
-# pending with annotations
 
 from url_provider import url_segments_cricket
 from typing import *
 import requests
 import json
 import datetime
-
-import re  # currently of no use
-import pprint  # currently used for pretty print
+import pprint  # should only be used for print
 
 # properties going to be private!!
 headings_values: List = []
@@ -21,17 +18,13 @@ meta_data_dict = {}
 
 raw_data = {}
 
-# this first_url is temp object not meant be used in real scenario.
-# this url is also used in meta data XXXXXXXXX
-# print(first_url.get_absolute_url())
-
-first_url = url_segments_cricket(
-    "bowling",
-    "most_wickets",
+first_url: url_segments_cricket = url_segments_cricket(
+    "batting",
+    "most_runs",
     "test_match",
     "India"
 )
-batting_oneDayInternationals_fetch_url = first_url.get_absolute_url()
+batting_oneDayInternationals_fetch_url: str = first_url.get_absolute_url()
 
 requested_data = requests.get(batting_oneDayInternationals_fetch_url)
 unparsed_data = BeautifulSoup(requested_data.text, 'html.parser')
@@ -61,7 +54,7 @@ def cricket_data_parser(unparsed_data: list) -> List:
 
 def cricket_data_heading(unparsed_data: list) -> NoReturn:
     """
-    Function to parse or fetch headings of each columns.
+    Function to parse and fetch headings of each columns.
     """
 
     main_table_ele = unparsed_data.find("thead")
@@ -79,7 +72,7 @@ def cricket_data_heading(unparsed_data: list) -> NoReturn:
 
 def mainData_binder(headings: List, batting_data: List) -> NoReturn:
     """
-    DOC: binds data with their respectie field and supply it into dictionary format.
+    DOC: binds data with their respective field and supply it into dictionary format.
     """
     headingsLen = len(headings)
     basicDataLen = len(batting_data[0])
@@ -97,7 +90,7 @@ def mainData_binder(headings: List, batting_data: List) -> NoReturn:
             main_data_dict[f"player_{player_id + 1}"] = temp_player_data
 
 
-def metaData_binder(headings_values: List, headings_description: List):
+def metaData_binder(headings_values: List, headings_description: List) -> NoReturn:
     """
     DOC: This function fetch and populate meta data from site.
     """
@@ -116,9 +109,12 @@ def metaData_binder(headings_values: List, headings_description: List):
     meta_data_dict['field_description'] = fields_description
     meta_data_dict['source_url'] = first_url.get_absolute_url()
     meta_data_dict['data_length'] = len(batting_data)
+    meta_data_dict['keys'] = headings_values
+    meta_data_dict['keys'].append('player_url')
+    meta_data_dict['keys_length'] = len(headings_values)
 
 
-def get_rawData(meta_data_dict: Dict[str, Any], main_data_dict: Dict[str, str]):
+def get_rawData(meta_data_dict: Dict[str, Any], main_data_dict: Dict[str, str]) -> NoReturn:
     """
     DOC: This returns raw data which was in python format.
     """
@@ -126,7 +122,7 @@ def get_rawData(meta_data_dict: Dict[str, Any], main_data_dict: Dict[str, str]):
     raw_data['data'] = main_data_dict
 
 
-def get_json_data(raw_data: Dict[str, Dict[str, Any]]):
+def get_json_data(raw_data: Dict[str, Dict[str, Any]]) -> str:
     """
     DOC: This function gives json formatted data,
     to send further.
@@ -137,8 +133,8 @@ def get_json_data(raw_data: Dict[str, Dict[str, Any]]):
 if __name__ == "__main__":
     cricket_data_parser(unparsed_data)
     cricket_data_heading(unparsed_data)
-    metaData_binder(headings_values, headings_description)
     mainData_binder(headings_values, batting_data)
+    metaData_binder(headings_values, headings_description)
     get_rawData(meta_data_dict, main_data_dict)
     print(get_json_data(raw_data))
 
@@ -146,5 +142,4 @@ if __name__ == "__main__":
 """
 task 2. class object for data 
 task 4. fecthing data some kind async current data. like ipt or t20. ---- last priority
-task 5. regex for url parameters.....
 """

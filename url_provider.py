@@ -55,6 +55,5 @@ class url_segments_cricket:
         """
         class_segment = self._get_url_class_segment()
         pre_html = self._get_category()
-        # print(class_segment, pre_html)
-
+        
         return 'https://stats.espncricinfo.com' + self._data_binding(pre_html, class_segment, self._country)
