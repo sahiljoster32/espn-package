@@ -2,22 +2,15 @@
 from __future__ import annotations
 from typing import *
 
-from constants import *
+from constants import cricket_const
 
 
 class url_segments_cricket:
-
     """
     Class: To provide and construct url based on query parameters.
     following functions can used to fetch url:-
     1.get_relative_url
     2.get_absolute_url
-    """
-
-    subclass: Dict(str, str) = subclass_const
-    category: Dict(str, Dict(str, str)) = category_const
-    """
-    Above Predefined constants are not meant to be touched
     """
 
     def __init__(self, category_sub_1: str, category_sub_2: str, subclass_query: str, country: str) -> None:
@@ -28,13 +21,13 @@ class url_segments_cricket:
 
     def _data_binding(self, pre_html1: str, class_segment: str, country_key: str) -> str:
         # Get error for keywords defined in constants.py.
-        return country_url_str(pre_html1, class_segment, country_key)
+        return cricket_const.country_url_str(pre_html1, class_segment, country_key)
 
     def _get_subclass_number(self) -> str:
-        return self.subclass.get(self._subclass_query)
+        return cricket_const.subclass_const(self._subclass_query)
 
     def _get_category(self) -> str:
-        return self.category.get(self._category_sub_1).get(self._category_sub_2)
+        return cricket_const.category_const(self._category_sub_1, self._category_sub_2)
 
     def _get_url_class_segment(self) -> str:
         self._subclass_query_num = self._get_subclass_number()

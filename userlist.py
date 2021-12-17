@@ -20,11 +20,13 @@ raw_data = {}
 
 first_url: url_segments_cricket = url_segments_cricket(
     "batting",
-    "most_runs",
+    "high_scores",
     "test_match",
     "India"
 )
-batting_oneDayInternationals_fetch_url: str = first_url.get_absolute_url()
+source_url = first_url.get_absolute_url()
+# print(source_url)
+batting_oneDayInternationals_fetch_url: str = source_url
 
 requested_data = requests.get(batting_oneDayInternationals_fetch_url)
 unparsed_data = BeautifulSoup(requested_data.text, 'html.parser')
@@ -107,7 +109,7 @@ def metaData_binder(headings_values: List, headings_description: List) -> NoRetu
         fields_description['player_url'] = 'relative link of each player'
 
     meta_data_dict['field_description'] = fields_description
-    meta_data_dict['source_url'] = first_url.get_absolute_url()
+    meta_data_dict['source_url'] = source_url
     meta_data_dict['data_length'] = len(batting_data)
     meta_data_dict['keys'] = headings_values
     meta_data_dict['keys'].append('player_url')
