@@ -34,7 +34,7 @@ unparsed_data = BeautifulSoup(requested_data.text, 'html.parser')
 
 def cricket_data_parser(unparsed_data: list) -> List:
     """
-    Function to fetch actual raw-data from site and
+    DOC: Function to fetch actual raw-data from site and
     supply it into the form of list.
     """
 
@@ -54,9 +54,9 @@ def cricket_data_parser(unparsed_data: list) -> List:
     return batting_data
 
 
-def cricket_data_heading(unparsed_data: list) -> NoReturn:
+def cricket_data_heading(unparsed_data: list) -> None:
     """
-    Function to parse and fetch headings of each columns.
+    DOC: Function to parse and fetch headings of each columns.
     """
 
     main_table_ele = unparsed_data.find("thead")
@@ -72,7 +72,7 @@ def cricket_data_heading(unparsed_data: list) -> NoReturn:
             headings_description.append(head_title_txt)
 
 
-def mainData_binder(headings: List, batting_data: List) -> NoReturn:
+def mainData_binder(headings: List, batting_data: List) -> None:
     """
     DOC: binds data with their respective field and supply it into dictionary format.
     """
@@ -92,7 +92,7 @@ def mainData_binder(headings: List, batting_data: List) -> NoReturn:
             main_data_dict[f"player_{player_id + 1}"] = temp_player_data
 
 
-def metaData_binder(headings_values: List, headings_description: List) -> NoReturn:
+def metaData_binder(headings_values: List, headings_description: List) -> None:
     """
     DOC: This function fetch and populate meta data from site.
     """
@@ -116,7 +116,7 @@ def metaData_binder(headings_values: List, headings_description: List) -> NoRetu
     meta_data_dict['keys_length'] = len(headings_values)
 
 
-def get_rawData(meta_data_dict: Dict[str, Any], main_data_dict: Dict[str, str]) -> NoReturn:
+def get_rawData(meta_data_dict: Dict[str, Any], main_data_dict: Dict[str, str]) -> None:
     """
     DOC: This returns raw data which was in python format.
     """
@@ -126,11 +126,16 @@ def get_rawData(meta_data_dict: Dict[str, Any], main_data_dict: Dict[str, str]) 
 
 def get_json_data(raw_data: Dict[str, Dict[str, Any]]) -> str:
     """
-    DOC: This function gives json formatted data,
+    DOC: This function gives json formatted data, without any indentation 
     to send further.
     """
     return json.dumps(raw_data)
 
+def get_Json_parsed_data(data: str) -> None:
+    """
+    Return: Data formatted acc. to json documentation, with proper indentation.
+    """
+    return json.dumps(data, indent = 4)
 
 if __name__ == "__main__":
     cricket_data_parser(unparsed_data)
@@ -138,6 +143,7 @@ if __name__ == "__main__":
     mainData_binder(headings_values, batting_data)
     metaData_binder(headings_values, headings_description)
     get_rawData(meta_data_dict, main_data_dict)
+    # print(get_Json_parsed_data(raw_data))
     print(get_json_data(raw_data))
 
 
